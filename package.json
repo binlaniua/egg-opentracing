@@ -1,6 +1,6 @@
 {
-  "name": "egg-opentracing",
-  "version": "1.1.1",
+  "name": "@qianmi/egg-opentracing",
+  "version": "1.1.2",
   "description": "opentracing plugin for egg",
   "eggPlugin": {
     "name": "opentracing"
@@ -18,7 +18,9 @@
     "test-local": "egg-bin test",
     "cov": "egg-bin cov",
     "autod": "autod",
-    "ci": "npm run lint && npm run cov"
+    "ci": "npm run lint && npm run cov",
+    "login": "npm login --registry=http://registry.npm.qianmi.com",
+    "pub": "npm publish --registry=http://registry.npm.qianmi.com"
   },
   "repository": {
     "type": "git",

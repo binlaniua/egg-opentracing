@@ -26,6 +26,14 @@ Implementation of [opentracing](http://opentracing.io/) in Egg.js
 - Customize carrier
 - Customize collector
 
+## 扩展
+
+- 增加忽略某些url
+- 增加扩展span
+
+## Version
+
+
 ## Install
 
 ```bash
