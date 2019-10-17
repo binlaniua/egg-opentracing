@@ -37,13 +37,6 @@ $ npm i egg-opentracing --save
 ```js
 // {app_root}/config/plugin.js
 exports.opentracing = {
-  pathIgnores: [],
-  spanDecorate: {
-    in(span,ctx){
-      //span.name = `${ctx.method}|${ctx.path}`
-    },
-    out(span,ctx){}
-  },
   enable: true,
   package: 'egg-opentracing',
 };
