@@ -23,18 +23,42 @@ module.exports = app => {
   logHTTPServer(app);
 };
 
+function isIgnore(rules, path) {
+  if (rules){
+    for(let i = 0, ignore = null; ignore = rules[i]; i++){
+      if (ignore instanceof RegExp && ignore.test(path)) {  //regexp
+        return true;
+      }
+      if (ignore instanceof String && path.indexOf(ignore) != -1) { //string
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
 function logHTTPServer(app) {
+  const {pathIgnores, spanDecorate} = app.config;
   const httpServerSpan = Symbol('Context#httpServerSpan');
   app.on('request', ctx => {
+    if (isIgnore(pathIgnores, ctx.path)){
+        return;
+    }
     const spanContext = ctx.tracer.extract('HTTP', ctx.header);
     const span = ctx.tracer.startSpan('http_server', { childOf: spanContext });
     span.setTag('span.kind', 'server');
     ctx[httpServerSpan] = span;
+    if (spanDecorate && spanDecorate.in){
+      spanDecorate.in(span);
+    }
   });
   app.on('response', ctx => {
     const socket = ctx.req.connection;
 
     const span = ctx[httpServerSpan];
+    if (!span){
+      return;
+    }
     // TODO: what's the service name of the remote server
     // span.setTag('peer.service');
     span.setTag('peer.port', socket.remotePort);
@@ -49,6 +73,9 @@ function logHTTPServer(app) {
     span.setTag('http.status_code', ctx.realStatus);
     span.setTag('http.request_size', ctx.get('content-length') || 0);
     span.setTag('http.response_size', ctx.length || 0);
+    if (spanDecorate && spanDecorate.out){
+      spanDecorate.out(span);
+    }
     span.finish();
   });
 }

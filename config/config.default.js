@@ -8,11 +8,18 @@ module.exports = (appInfo, appConfig) => {
   /**
    * egg-opentracing default config
    * @member Config#opentracing
+   * @property {Array<String | RegExp>} pathIgnores - ignore path trace
+   * @property {Object}  spanDecorate - decorate span
    * @property {String} globalTracer - override the default Tracer
    * @property {Object} carrier - the map of carriers
    * @property {Object} collector - the map of collectors
    */
   config.opentracing = {
+    pathIgnores: [],
+    spanDecorate: {
+      in(span){},
+      out(span){}
+    },
     globalTracer: require('../lib/tracer'),
     carrier: {
       HTTP: require('../lib/carrier/http_carrier'),
