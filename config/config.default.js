@@ -17,8 +17,8 @@ module.exports = (appInfo, appConfig) => {
   config.opentracing = {
     pathIgnores: [],
     spanDecorate: {
-      in(span){},
-      out(span){}
+      in(span, ctx){},
+      out(span, ctx){}
     },
     globalTracer: require('../lib/tracer'),
     carrier: {

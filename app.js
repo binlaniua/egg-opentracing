@@ -38,7 +38,7 @@ function isIgnore(rules, path) {
 }
 
 function logHTTPServer(app) {
-  const {pathIgnores, spanDecorate} = app.config;
+  const {pathIgnores, spanDecorate} = app.config.opentracing;
   const httpServerSpan = Symbol('Context#httpServerSpan');
   app.on('request', ctx => {
     if (isIgnore(pathIgnores, ctx.path)){
@@ -49,7 +49,7 @@ function logHTTPServer(app) {
     span.setTag('span.kind', 'server');
     ctx[httpServerSpan] = span;
     if (spanDecorate && spanDecorate.in){
-      spanDecorate.in(span);
+      spanDecorate.in(span, ctx);
     }
   });
   app.on('response', ctx => {
@@ -74,7 +74,7 @@ function logHTTPServer(app) {
     span.setTag('http.request_size', ctx.get('content-length') || 0);
     span.setTag('http.response_size', ctx.length || 0);
     if (spanDecorate && spanDecorate.out){
-      spanDecorate.out(span);
+      spanDecorate.out(span, ctx);
     }
     span.finish();
   });
